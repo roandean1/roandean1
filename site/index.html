@@ -1,37 +1,48 @@
 <!DOCTYPE html>
-
-<html lang="en">
+<html>
+  <div class="floor">
+	<div class="cube__wrapper">
+		<div class="cube">
+			<div class="face back" style="--transform:rotatex(-90deg); --grad:to top;"></div>
+			<div class="face bottom"></div>
+			<div class="group" style="--transform:rotatex(90deg);">
+				<div class="face front" style="--grad: to bottom"></div>
+				<div class="face top" style="--transform:rotatex(90deg); --grad: to bottom"></div>
+			</div>
+			<div class="face left" style="--transform:rotatey(90deg); --grad: to left"></div>
+			<div class="face right" style="--transform:rotatey(-90deg); --grad: to right"></div>
+		</div>
+	</div>
+	<div class="cube__wrapper">
+		<div class="cube">
+			<div class="face back" style="--transform:rotatex(-90deg); --grad:to top;"></div>
+			<div class="face bottom"></div>
+			<div class="group" style="--transform:rotatex(90deg);">
+				<div class="face front" style="--grad: to bottom"></div>
+				<div class="face top" style="--transform:rotatex(90deg); --grad: to bottom"></div>
+			</div>
+			<div class="face left" style="--transform:rotatey(90deg); --grad: to left"></div>
+			<div class="face right" style="--transform:rotatey(-90deg); --grad: to right"></div>
+		</div>
+	</div>
+</div>
+  <img src="https://c4.wallpaperflare.com/wallpaper/18/491/722/technology-spacex-falcon-9-lift-off-wallpaper-preview.jpg" 
+     width="300" 
+     height="200" />
+  <center>rocket launch system</center>
   <head>
-    <meta charset="utf-8" />
-    <title>NGINX on Railway</title>
-    <meta name="description" content="Choo Choo!" />
-
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <link rel="stylesheet" href="/styles.css?v=1.0" />
+    <center><title>launch Rocket</title>
+        <font size="+5">launch rocket</font>
   </head>
-
   <body>
-    <main>
-      <img
-        src="https://railway.app/brand/logo-light.svg"
-        alt="Railway logo"
-        class="logo"
-      />
+ 
+    <button type="button" class="block">Launch</button>
+    <script src="https://cdn.jsdelivr.net/gh/brodykenrick/arduino-codelab/lib/ino.js">
 
-      <h1>NGINX on Railway</h1>
+    </script>
+    <script src="script.js"></script>
+  </body>
+</html>
 
-      <p>
-        Choo Choo! This is an example of an NGINX static site running on
-        Railway.
-        <a
-          href="https://github.com/railwayapp/starters/tree/master/examples/nginx"
-          >View source</a
-        >.
-      </p>
-    </main>
-
-    <script src="/script.js"></script>
   </body>
 </html>
