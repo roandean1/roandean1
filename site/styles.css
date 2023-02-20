@@ -1,39 +1,298 @@
-body {
-  margin: 0;
-  padding: 2rem;
-  background-color: hsl(250, 24%, 9%);
-  color: hsl(0, 0%, 100%);
-  font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui,
-    helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
+$w: 5rem;
+$x: 9; // width of the grid
+$y: 8; // height of the grid
+
+:root {
+	--anim-duration: 5s;
+	--anim-delay: 0s;
+	--anim-props: ease-in-out infinite;
+	--clr-cube-1: deepskyblue;
+	--clr-cube-2: deeppink;
+	--clr-lines: #919084;
+	--clr-bg: #2a2b31;
+	--grid-v: repeating-linear-gradient(
+		to right,
+		transparent 0,
+		transparent calc(#{$w} - 1px),
+		var(--clr-lines) 0,
+		var(--clr-lines) #{$w}
+	);
+	--grid-h: repeating-linear-gradient(
+		to bottom,
+		transparent 0,
+		transparent calc(#{$w} - 1px),
+		var(--clr-lines) 0,
+		var(--clr-lines) #{$w}
+	);
+	--bounce: cubic-bezier(0.4, 0.2, 0.5, 1.6);
 }
 
-main {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+body {
+	height: 100vh;
+	margin: 0;
+	display: grid;
+	place-items: center;
+	perspective: 30rem;
+	background: var(--clr-bg);
+}
+
+body * {
+	transform-style: preserve-3d;
+}
+
+.floor {
+	display: grid;
+	width: #{$w * $x}; // odd value to align on the grid
+	height: #{$w * $y}; // even value to align on the grid
+	grid-template-columns: repeat($x, #{$w});
+	grid-template-rows: repeat($y, #{$w});
+	background: yellow;
+	background-image: radial-gradient(
+			ellipse at center,
+			transparent 25%,
+			var(--clr-bg) 70%
+		),
+		var(--grid-h), var(--grid-v);
+	animation: var(--anim-duration) var(--anim-props) floor;
+}
+
+.cube__wrapper:nth-of-type(1) {
+	grid-area: 4/4/8/7;
+
+	& .face {
+		background: var(--clr-cube-1);
+	}
+}
+
+.cube__wrapper:nth-of-type(2) {
+	grid-area: 1/5/5/8;
+	transform: rotateZ(180deg);
+	--anim-delay: -0.5s;
+	& .face {
+		background: var(--clr-cube-2);
+	}
+}
+
+.cube__wrapper {
+	position: relative;
+
+	&:after {
+		position: absolute;
+		content: "";
+		width: #{$w};
+		height: #{$w};
+		top: #{$w};
+		left: #{$w};
+		background: rgb(0 0 0 / 70%);
+		animation: var(--anim-duration) var(--anim-props) var(--anim-delay)
+			cube-shadow;
+	}
+}
+
+.cube {
+	display: grid;
+	grid-template-columns: repeat(3, #{$w});
+	grid-template-rows: repeat(4, #{$w});
+	transform-origin: 50% 37.5% #{$w / 2};
+	animation: var(--anim-duration) var(--anim-props) var(--anim-delay) cube-anim;
+}
+
+.face {
+	position: relative;
+	box-shadow: 0 0 #{$w / 6} rgb(255 255 255 / 25%) inset;
+
+	&:before,
+	&:after {
+		content: "";
+		position: absolute;
+		inset: 0;
+	}
+
+	&:before {
+		background: yellow;
+		transform: translate3d(0, 0, 1px);
+		background-image: var(--grid-h), var(--grid-v);
+	}
+
+	&:after {
+		animation: var(--anim-duration) var(--anim-props) var(--anim-delay)
+			face-shadow;
+	}
+}
+
+.face.back {
+	grid-area: 1/2;
+	transform-origin: 50% 100%;
+}
+
+.face.bottom {
+	grid-area: 2/2;
+}
+
+.group {
+	grid-area: 3/2/5/3;
+	transform-origin: 50% 0;
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: 1fr 1fr;
+}
+
+.face.front {
+	grid-area: 1/1;
+}
+
+.face.top {
+	grid-area: 2/1;
+	transform-origin: 50% 0;
+}
+
+.face.left {
+	grid-area: 2/1;
+	transform-origin: 100% 50%;
+}
+
+.face.right {
+	grid-area: 2/3;
+	transform-origin: 0 50%;
+}
+
+.face.back,
+.group,
+.face.top,
+.face.left,
+.face.right {
+	animation: var(--anim-duration) var(--anim-props) var(--anim-delay) folding;
+}
+
+// ------------------------------------------ ANIMATIONS
+@keyframes folding {
+	0%,
+	100% {
+		transform: rotatey(0);
+	}
+
+	20%,
+	80% {
+		transform: var(--transform);
+	}
+}
+
+@keyframes face-shadow {
+	0%,
+	100% {
+		background-image: linear-gradient(
+			var(--grad),
+			rgb(0 0 0 / 75%) 100%,
+			rgb(0 0 0 /0%)
+		);
+	}
+
+	20%,
+	80% {
+		background-image: linear-gradient(
+			var(--grad),
+			rgb(0 0 0 / 20%) 20%,
+			rgb(0 0 0 /0%)
+		);
+	}
+}
+
+@keyframes floor {
+	0% {
+		transform: rotatex(0);
+	}
+
+	20%,
+	100% {
+		transform: rotatex(40deg) rotatez(45deg);
+	}
+}
+
+@keyframes cube-shadow {
+	0% {
+		filter: blur(0);
+	}
+
+	20% {
+		filter: blur(#{$w / 5});
+	}
+
+	25% {
+		animation-timing-function: var(--bounce);
+		filter: blur(#{$w / 5});
+		transform: scale(1);
+		opacity: 1;
+	}
+
+	35% {
+		filter: blur(#{$w / 4});
+		transform: scale(0.65);
+		opacity: 0.75;
+	}
+
+	75% {
+		transform: scale(0.65) rotatez(1turn);
+		animation-timing-function: var(--bounce);
+	}
+
+	85%,
+	100% {
+		transform: scale(1) rotatez(1turn);
+		opacity: 1;
+		filter: blur(#{$w / 5});
+	}
+}
+
+@keyframes cube-anim {
+	25% {
+		animation-timing-function: var(--bounce);
+		transform: translatez(0);
+	}
+
+	35% {
+		transform: translatez(#{$w});
+	}
+
+	75% {
+		transform: translatez(#{$w}) rotatez(1turn);
+		animation-timing-function: var(--bounce);
+	}
+
+	85%,
+	100% {
+		transform: translatez(0) rotatez(1turn);
+	}
+}
+
+/* Add some basic styles to the website */
+  body {
+    font-family: Stencil Std, fantasy;
+  background: linear-gradient(0deg, rgba(215,121,139,1) 0%, rgba(126,57,124,1) 50%, rgba(61,28,81,1) 100%);
+  height: 100vh;
+}
 }
 
 h1 {
-  font-size: 48px;
-  margin: 1rem 0;
+  margin: 0.5rem;
+   font-size: large;
 }
 
-.logo {
-  width: 8rem;
-  height: 8rem;
-  margin-bottom: 2rem;
+center {
+margin: 0.5rem;
 }
+  
 
-p {
-  line-height: 1.6;
-}
-
-a {
-  color: hsl(270, 70%, 65%);
-  text-decoration: none;
-}
+.block {
+  display: block;
+  border-radius: 12px;
+  width: 50%;
+  border: none;
+  background-color: red;
+  padding: 14px 28px;
+  font-size: 24px;
+  cursor: pointer;
+  text-align: center;
+  font-family: Stencil Std, fantasy;
 
 a:hover {
   text-decoration: underline;
